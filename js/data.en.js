@@ -405,12 +405,18 @@ window.DATA_EN = {
         ["Move to Lisbon", "You pack a suitcase, the cat and a jar of adjika."],
       ],
     },
-    offer_abroad: {
-      text: "A recruiter messages you on LinkedIn: \"Two openings, both with relocation.\" One is in Berlin, with a Blue Card, German health insurance and an Ausländerbehörde appointment \"in a few months\". The other is in Limassol: the sea, lower taxes, and a separate line in the pitch noting that the City of Dreams casino resort is near the office.",
+    offer_de: {
+      text: "A recruiter messages you on LinkedIn: a Berlin startup, relocation, a Blue Card, German health insurance. They're honest that the Ausländerbehörde appointment will be \"in a few months\". Salary in euros, taxes in euros too.",
       choices: [
-        ["Germany: Berlin, Blue Card", "You sign the offer and pack a winter jacket. Your last khinkali is at the train station."],
-        ["Cyprus: Limassol, the sea and a casino", "You sign the offer and buy sunglasses. For some reason the phrase \"just to have a look\" keeps spinning in your head."],
-        ["No, I'm staying in Tbilisi", "You turn them both down. The recruiter likes your LinkedIn post out of pity."],
+        ["Accept and move to Berlin", "You sign the offer and pack a winter jacket. Your last khinkali is at the train station."],
+        ["Turn it down and stay in Tbilisi", "You say no. The recruiter likes your LinkedIn post out of pity."],
+      ],
+    },
+    offer_cy: {
+      text: s => `A recruiter from Limassol invites you to ${({ it: "write the backend for an online casino", pm: "be a product manager at an online casino", design: "design slot machines for an online casino", smm: "run social media for an online casino", copy: "write bonus copy for an online casino" })[s.char.prof.id]}. The salary is one and a half times your Tbilisi one, the sea is ten minutes from the office, and the office has no sign. When you ask "what's the company?", the recruiter says: "iGaming, all legal, half the island works in it."`,
+      choices: [
+        ["Accept the online casino offer", "You sign the offer and buy sunglasses. The word \"casino\" doesn't appear once in your employment contract."],
+        ["Turn it down and stay in Tbilisi", "You say no. A week later an ad shows you a slot you could have been building. It's called \"Golden Khinkali\"."],
       ],
     },
     flat_buy: {
@@ -525,7 +531,7 @@ window.DATA_EN = {
     refused: { title: "Entry refused", text: s => s.has("refused_protest") ? `Coming back from a border run, you're refused entry. The form says "other reasons", but everyone knows: ${s.counters.protests} evenings on Rustaveli didn't go unnoticed. You stay in Yerevan and bang a pot on your balcony at 9 p.m. every evening. Your Armenian neighbours first tap their temples, then start banging along with you.` : "Coming back from a border run, you're refused entry at the Georgian border, no explanation. You stay in Yerevan and open its 41st coffee shop. You can see Tbilisi on a clear day. No, you can't. But you look anyway." },
     lisbon: { title: "Lisbon", text: () => "You're in Lisbon. Hills here too, little trams too, coffee shops too. But khinkali cost 18 euros and are made by Brazilians. Every evening you tweet \"miss tbilisi\"." },
     germany: { title: "Germany", text: s => `You're in Berlin. Your Blue Card is approved, and the next Ausländerbehörde appointment is in four months. Deutsche Bahn trains are late so confidently that you miss the marshrutkas. Everything is closed on Sunday, so you stay home learning two languages at once: German and the Georgian you ${s.geo >= 30 ? "almost learned" : "never learned"}. There are khinkali in Berlin, but it's just not the same.` },
-    cyprus: { title: "Cyprus", text: s => `You're in Limassol. The sea, an office overlooking the port, and colleagues you already know from Tbilisi. On your very first Friday you walk into the City of Dreams casino resort "just to have a look". By Monday morning ${s.money > 3000 ? "your Tbilisi savings are down to $" + Math.round(s.money * 0.2).toLocaleString("en-US") : "you owe the casino more than the move cost"}. You tweet: "at least there's the sea". Game over, bets are placed.` },
+    cyprus: { title: "Cyprus", text: s => `You're in Limassol, working for an online casino: by day you ${({ it: "fix the roulette backend", pm: "figure out how to keep players for one more spin", design: "draw slots full of fruit and treasure chests", smm: "post free-spin giveaways", copy: "write \"Double your deposit now!\" in forty variations" })[s.char.prof.id]}, by evening there's the sea. Half your colleagues are your old Tbilisi crowd. Six months in, you catch yourself spinning at night the very slot you built during the day. Bets are placed, game over.` },
     final: { title: "You're still here", text: null },
   },
 };

@@ -112,7 +112,10 @@ test("оффер за границу ведёт в Германию или на 
     g.flushTimeouts();
     if (s.ended === "germany" || s.ended === "cyprus") {
       seen.add(s.ended);
-      assert.match(g.$("#endText").textContent, s.ended === "cyprus" ? /казино/ : /Берлин/);
+      assert.match(g.$("#endText").textContent, s.ended === "cyprus" ? /онлайн-казино/ : /Берлин/);
+      // каждому герою приходит максимум один оффер
+      const offers = Object.keys(s.fired).filter(id => id === "offer_de" || id === "offer_cy");
+      assert.ok(offers.length <= 1, offers.join());
     }
   }
   assert.deepEqual([...seen].sort(), ["cyprus", "germany"]);
