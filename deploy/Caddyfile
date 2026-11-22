@@ -1,0 +1,18 @@
+# SITE_ADDRESS: ":80", пока сайт живёт по IP, или "tbilisi-lor.com" —
+# тогда Caddy сам получит HTTPS-сертификат от Let's Encrypt. www.<домен> редиректит на основной.
+{$SITE_ADDRESS::80} {
+	root * /srv
+	encode gzip zstd
+	file_server
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+	@assets path *.css *.js
+	header @assets Cache-Control "public, max-age=3600"
+}
+
+{$WWW_ADDRESS:http://www.localhost} {
+	redir https://{$SITE_ADDRESS}{uri} permanent
+}

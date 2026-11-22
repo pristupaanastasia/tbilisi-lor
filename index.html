@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1 из 112 000</title>
+  <meta name="description" content="1 из 112 000 — шуточный симулятор жизни релоканта в Тбилиси: от 24 февраля 2022 до наших дней. Хинкали, фриганы, полиамория, драки в баре Кошини, бордераны и протесты на Руставели.">
+  <meta name="keywords" content="Тбилиси, релоканты, игра, симулятор жизни, 1 in 8 billion, Грузия, фриганы, браузерная игра">
+  <link rel="canonical" href="https://tbilisi-lor.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tbilisi-lor.com/">
+  <meta property="og:site_name" content="Тбилиси-лор">
+  <meta property="og:title" content="1 из 112 000 — симулятор релоканта в Тбилиси">
+  <meta property="og:description" content="Проживи жизнь релоканта в Тбилиси с 2022 года: хинкали, фриганы, триада, Кошини и протесты на Руставели.">
+  <meta property="og:locale" content="ru_RU">
+  <meta name="twitter:card" content="summary">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&family=Noto+Sans+Georgian:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="intro" class="screen intro">
+    <div class="ka" aria-hidden="true">თბილისი</div>
+    <h1>1 из 112 000</h1>
+    <p class="lead">К концу 2022 года в Грузию переехали больше 112 тысяч человек. Ты один из них.
+      Жизнь идёт сама, по реальным датам. Иногда придётся выбирать.</p>
+    <div class="charcard">
+      <p id="who"></p>
+      <p id="whoMoney" class="muted"></p>
+    </div>
+    <div class="row">
+      <button id="begin" class="primary">Прожить эту жизнь</button>
+      <button id="reroll" class="ghost">Другая жизнь ↻</button>
+    </div>
+    <p class="fine">Игра шуточная. Персонажи и бар «Кошини» выдуманы, события на Руставели настоящие.</p>
+  </main>
+
+  <main id="game" class="screen game" hidden>
+    <header class="top">
+      <div class="when">
+        <div id="date" class="date"></div>
+        <div id="days" class="muted small"></div>
+      </div>
+      <div class="money">
+        <div id="money"></div>
+        <div id="flow" class="muted small"></div>
+      </div>
+      <div class="bars">
+        <div class="bar"><label>Кукуха <b id="kukuhaN"></b></label><div class="track"><i id="kukuha"></i></div></div>
+        <div class="bar"><label>Грузинский <b id="geoN"></b></label><div class="track"><i id="geo"></i></div></div>
+        <div class="bar"><label>Тусовка <b id="tusaN"></b></label><div class="track"><i id="tusa"></i></div></div>
+      </div>
+      <div id="counters" class="counters"></div>
+      <div class="timeline"><i id="progress"></i><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
+    </header>
+
+    <nav class="tabs">
+      <button data-tab="feed" class="on">Жизнь</button>
+      <button data-tab="tl">ТЛ <span id="tlCount" class="count" hidden>0</span></button>
+    </nav>
+
+    <div class="cols">
+      <section id="feed" class="feed" aria-live="polite"></section>
+      <aside class="tlwrap">
+        <h2>ТЛ</h2>
+        <div id="tl" class="tl"></div>
+      </aside>
+    </div>
+
+    <footer class="controls">
+      <button id="pause" class="pause" aria-label="Пауза">❚❚</button>
+      <div class="speeds">
+        <button data-speed="0" class="on">1×</button>
+        <button data-speed="1">2×</button>
+        <button data-speed="2">4×</button>
+        <button data-speed="3">8×</button>
+        <button data-speed="4">16×</button>
+      </div>
+      <label class="auto"><input type="checkbox" id="auto"> автопилот</label>
+    </footer>
+  </main>
+
+  <main id="ending" class="screen ending" hidden>
+    <div class="ka" aria-hidden="true">ფინალი</div>
+    <h1 id="endTitle"></h1>
+    <p id="endDate" class="muted"></p>
+    <p id="endText" class="lead"></p>
+    <dl id="endStats" class="stats"></dl>
+    <div class="row">
+      <button id="again" class="primary">Прожить другую жизнь</button>
+      <button id="share" class="ghost">Скопировать итог</button>
+    </div>
+    <section class="pathwrap">
+      <h2>Карта выборов <span id="pathCount" class="muted"></span></h2>
+      <p class="muted small">Сплошной кружок отмечает то, что ты выбрал(а), пустой отмечает жизни, которые остались непрожитыми.</p>
+      <ol id="path" class="path"></ol>
+    </section>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
