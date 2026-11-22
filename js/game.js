@@ -21,7 +21,11 @@
   const NOW = new Date();
   const END = Math.max(Date.UTC(NOW.getFullYear(), NOW.getMonth(), NOW.getDate()), Date.UTC(2026, 10, 22));
   const SPEEDS = [1, 2, 4, 8, 16];
-  const BASE_INTERVAL = 1900;
+  // Темп: следующая карточка появляется, когда успеваешь прочитать текущую (на 1×).
+  const TICK_MS = 200;
+  const readTime = text => clamp(1000 + String(text).length * 30, 2500, 9000);
+  let nextAt = 0;
+  const wait = ms => { nextAt = Date.now() + ms / SPEEDS[speedIdx]; };
   // еда, транспорт, хинкали — $ в месяц сверх аренды: бедные живут скромнее
   const livingCost = income => 260 + 0.1 * income;
   const VISA_DAYS = 345;
@@ -192,6 +196,7 @@
 
   function tick() {
     if (!s || s.ended || awaiting || paused) return;
+    if (!window.__fast && Date.now() < nextAt) return; // ещё читаем прошлую карточку
 
     // тихие недели проматываем, пока не случится что-нибудь (но не больше 5 шагов за тик)
     let res = null;
@@ -200,10 +205,13 @@
     if (res?.ev) {
       s.fired[res.ev.id] = s.date;
       s.times[res.ev.id] = (s.times[res.ev.id] || 0) + 1;
-      showEvent(res.ev);
+      wait(readTime(showEvent(res.ev)));
     } else if (res?.filler) {
       applyFx(res.filler.fx);
       addCard({ text: res.filler.text, tag: res.tag || "filler" });
+      wait(readTime(res.filler.text));
+    } else {
+      wait(600); // тихие недели проматываем быстро
     }
 
     maybeAmbient();
@@ -235,7 +243,7 @@
     if (!ev.choices) {
       applyFx(ev.fx);
       addCard({ text, tag: ev.tag });
-      return;
+      return text;
     }
     applyFx(ev.fx);
     const card = addCard({ text, tag: ev.tag, choices: ev.choices });
@@ -247,7 +255,8 @@
     const btns = card.querySelectorAll(".choice");
     card._ev = { date: s.date, tag: ev.tag, text, options: ev.choices.map(c => c.t) };
     btns.forEach((b, i) => b.addEventListener("click", () => choose(card, ev.choices[i], b, i)));
-    if (autopilot) card._auto = setTimeout(() => autoPick(card), Math.max(700, 2400 / SPEEDS[speedIdx]));
+    if (autopilot) card._auto = setTimeout(() => autoPick(card), Math.max(1200, readTime(text) / SPEEDS[speedIdx]));
+    return "";
   }
 
   function autoPick(card) {
@@ -268,6 +277,7 @@
     p.className = "result";
     p.textContent = result;
     card.querySelector(".body").appendChild(p);
+    wait(readTime(result)); // даём прочитать, чем закончился выбор
     awaiting = null;
     document.body.classList.remove("awaiting");
     render();
@@ -358,12 +368,15 @@
 
   function start() {
     stop();
-    timer = setInterval(tick, BASE_INTERVAL / SPEEDS[speedIdx]);
+    timer = setInterval(tick, TICK_MS);
   }
   function stop() { clearInterval(timer); timer = null; }
 
   function setSpeed(i) {
+    // пересчитать оставшееся ожидание под новую скорость
+    const left = Math.max(0, nextAt - Date.now()) * SPEEDS[speedIdx];
     speedIdx = i;
+    wait(left);
     document.querySelectorAll("[data-speed]").forEach(b => b.classList.toggle("on", +b.dataset.speed === i));
     if (!paused && s && !s.ended) start();
   }

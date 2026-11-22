@@ -72,6 +72,7 @@ function load({ lang = "ru" } = {}) {
   };
 
   Object.assign(globalThis, {
+    __fast: true, // в тестах не ждём время чтения
     window: globalThis,
     document,
     location: { href: "https://tbilisi-lor.com/", search: "", pathname: "/" },
