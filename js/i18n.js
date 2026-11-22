@@ -22,8 +22,8 @@ window.I18N = (() => {
       tabLife: "Жизнь", tl: "Твиттер", newsLabel: "Новости", autopilot: "автопилот",
       again: "Прожить другую жизнь", share: "Скопировать итог",
       pathTitle: "Карта выборов",
-      pathLegend: "Сплошной кружок отмечает то, что ты выбрал(а), пустой отмечает жизни, которые остались непрожитыми.",
     },
+    pathLegend: s => `Сплошной кружок отмечает то, что ты ${s.g("выбрал", "выбрала")}, пустой отмечает жизни, которые остались непрожитыми.`,
     tlEmpty: "Пока тихо. Твиттер просыпается.",
     months: ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
     fmt: (d, m, y, M) => `${d} ${M[m]} ${y}`,
@@ -33,7 +33,7 @@ window.I18N = (() => {
     counters: { khinkali: "хинкали", beer: "пива", chacha: "чачи", dumpster: "кг спасено", protests: "протестов", fights: "драк", partners: "партнёров", borderruns: "бордеранов" },
     tags: { news: "новости", life: "жизнь", love: "любовь", freegan: "фриганство", fight: "Кошини", bar: "бары", drama: "срач", binge: "запой", filler: "" },
     pause: "Пауза", resume: "Продолжить",
-    who: (c, esc) => `Ты — <b>${esc(c.name)}</b>, ${c.age} ${plural(c.age, "год", "года", "лет")}, ${esc(c.prof.name)} из ${esc(c.city.from)}.`,
+    who: (c, esc) => `${c.gender === "m" ? "👨" : "👩"} Ты — <b>${esc(c.name)}</b>, ${c.age} ${plural(c.age, "год", "года", "лет")}, ${esc(c.prof.name)} из ${esc(c.city.from)}.`,
     whoMoney: (money, income, loc) => `На карте $${money.toLocaleString(loc)}. Доход $${income} в месяц. Грузинский: «гамарджоба» и «хинкали».`,
     rows: c => [
       ["Дней в Тбилиси", c.days], ["Хинкали съедено", c.khinkali], ["Бутылок пива", c.beer], ["Рюмок чачи", c.chacha],
@@ -90,8 +90,8 @@ window.I18N = (() => {
       tabLife: "Life", tl: "Twitter", newsLabel: "News", autopilot: "autopilot",
       again: "Live another life", share: "Copy summary",
       pathTitle: "Choice map",
-      pathLegend: "A filled dot is what you chose; an empty one is a life you never lived.",
     },
+    pathLegend: () => "A filled dot is what you chose; an empty one is a life you never lived.",
     tlEmpty: "All quiet. Twitter is waking up.",
     months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     fmt: (d, m, y, M) => `${M[m]} ${d}, ${y}`,
@@ -101,7 +101,7 @@ window.I18N = (() => {
     counters: { khinkali: "khinkali", beer: "beers", chacha: "chacha shots", dumpster: "kg rescued", protests: "protests", fights: "fights", partners: "partners", borderruns: "border runs" },
     tags: { news: "news", life: "life", love: "love", freegan: "freeganism", fight: "Koshini", bar: "bars", drama: "drama", binge: "binge", filler: "" },
     pause: "Pause", resume: "Resume",
-    who: (c, esc) => `You are <b>${esc(c.name)}</b>, ${c.age}, a ${esc(c.prof.name)} from ${esc(c.city.from)}.`,
+    who: (c, esc) => `${c.gender === "m" ? "👨" : "👩"} You are <b>${esc(c.name)}</b>, ${c.age}, a ${esc(c.prof.name)} from ${esc(c.city.from)}.`,
     whoMoney: (money, income, loc) => `$${money.toLocaleString(loc)} on your card. Income $${income} a month. Georgian: "gamarjoba" and "khinkali".`,
     rows: c => [
       ["Days in Tbilisi", c.days], ["Khinkali eaten", c.khinkali], ["Beers", c.beer], ["Chacha shots", c.chacha],
@@ -149,7 +149,7 @@ window.I18N = (() => {
     const missing = [];
     D.NAMES = E.NAMES;
     D.CITIES.forEach(c => Object.assign(c, E.CITIES[c.id]));
-    D.PROFS.forEach(p => (p.name = E.PROFS[p.id]));
+    D.PROFS.forEach(p => { p.name = E.PROFS[p.id]; delete p.nameF; });
     for (const e of [...D.FIXED, ...D.POOL]) {
       const t = E.EV[e.id];
       if (!t) { missing.push(e.id); continue; }

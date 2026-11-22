@@ -1,7 +1,10 @@
 // English texts for the game. Keyed by event id from data.js — dates, effects and conditions live there.
 // choices: [[button text, result text or s => text], ...] in the same order as in data.js.
 window.DATA_EN = {
-  NAMES: ["Sasha", "Zhenya", "Valya", "Mika", "Nika", "Shura", "Tosha", "Lyova", "Kira", "Slava", "Roma", "Danya"],
+  NAMES: {
+    m: ["Dima", "Nikita", "Artyom", "Misha", "Ilya", "Roma", "Pasha", "Kostya", "Gosha", "Vanya"],
+    f: ["Masha", "Nastya", "Katya", "Dasha", "Liza", "Polina", "Vika", "Sonya", "Olya", "Yulia"],
+  },
   CITIES: {
     msk: { name: "Moscow", from: "Moscow", to: "Moscow" },
     spb: { name: "St Petersburg", from: "St Petersburg", to: "St Petersburg" },

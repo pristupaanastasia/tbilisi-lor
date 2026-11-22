@@ -37,6 +37,21 @@ for (const lang of ["ru", "en"]) {
   });
 }
 
+test("пол героя виден и учитывается: имя, эмодзи, род в текстах", () => {
+  const g = load({ lang: "ru" });
+  const D = g.DATA;
+  for (let i = 0; i < 60; i++) {
+    g.$("#reroll").click();
+    const s = globalThis.__state();
+    assert.ok(D.NAMES[s.char.gender].includes(s.char.name), `${s.char.name} не из списка ${s.char.gender}`);
+    assert.match(g.$("#who").innerHTML, s.char.gender === "m" ? /^👨/ : /^👩/);
+  }
+  for (let i = 0; i < 40; i++) {
+    g.live();
+    for (const c of g.cards) assert.doesNotMatch(c, /\(а\)|\(ла\)|\(лась\)|\(шла\)/, `род не подставлен: ${c.slice(0, 100)}`);
+  }
+});
+
 test("ru: интерфейс на русском, en: на английском", () => {
   const ru = load({ lang: "ru" });
   assert.match(globalThis.document.title, /Тбилиси-лор/);
@@ -146,5 +161,7 @@ test("если от всего отказываться и денег хвата
   // всегда последний вариант (обычно «нет/остаться»), денег с запасом
   const s = liveWith(g, (card, st, n) => n - 1, st => { st.money = 1e6; st.flags.add("vnzh"); });
   assert.ok(["final", "home"].includes(s.ended) || s.binge === null, s.ended);
-  if (s.ended === "final") assert.equal(new Date(s.date).toISOString().slice(0, 10), "2026-11-22");
+  const d = new Date();
+  const today = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString().slice(0, 10);
+  if (s.ended === "final") assert.equal(new Date(s.date).toISOString().slice(0, 10), today);
 });

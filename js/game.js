@@ -17,7 +17,9 @@
   }
   const DAY = 86400000;
   const START = Date.UTC(2022, 1, 24);
-  const END = Date.UTC(2026, 10, 22);
+  // игра идёт до сегодняшнего дня (по часам игрока), но не раньше даты последних событий
+  const NOW = new Date();
+  const END = Math.max(Date.UTC(NOW.getFullYear(), NOW.getMonth(), NOW.getDate()), Date.UTC(2026, 10, 22));
   const SPEEDS = [1, 2, 4, 8, 16];
   const BASE_INTERVAL = 1900;
   // еда, транспорт, хинкали — $ в месяц сверх аренды: бедные живут скромнее
@@ -46,9 +48,10 @@
 
   function newLife() {
     const gender = Math.random() < 0.5 ? "m" : "f";
-    const prof = pick(D.PROFS);
+    const base = pick(D.PROFS);
+    const prof = { ...base, name: gender === "f" && base.nameF ? base.nameF : base.name };
     const st = {
-      char: { name: pick(D.NAMES), age: rnd(22, 38), gender, city: pick(D.CITIES), prof },
+      char: { name: pick(D.NAMES[gender]), age: rnd(22, 38), gender, city: pick(D.CITIES), prof },
       date: START,
       money: rnd(prof.money[0], prof.money[1]),
       income: prof.income,
@@ -144,6 +147,7 @@
   // Следующий шаг запоя: попытка выбраться (если отказов меньше трёх) или строчка из запоя
   function bingeStep() {
     const B = D.BINGE, b = s.binge;
+    const v = x => (typeof x === "function" ? x(s) : x);
     if (b.refusals >= 3 && !b.lostShown) { b.lostShown = true; s.flags.add("binge_lost"); return { filler: { text: B.lost, fx: {} }, tag: "binge" }; }
     if (b.refusals < 3 && Math.random() < 0.6) {
       const o = B.offers[b.offer % B.offers.length];
@@ -151,8 +155,8 @@
       return { ev: {
         id: `binge_${b.offer}`, tag: "binge", text: o.text,
         choices: [
-          { t: o.yes[0], r: o.yes[1], fx: { unbinge: true } },
-          { t: o.no[0], r: o.no[1], fx: { bingeRefuse: true } },
+          { t: v(o.yes[0]), r: o.yes[1], fx: { unbinge: true } },
+          { t: v(o.no[0]), r: o.no[1], fx: { bingeRefuse: true } },
         ],
       } };
     }
@@ -430,6 +434,7 @@
     const end = D.ENDINGS[s.ended];
     $("#path").innerHTML = nodes + `<li class="node final"><div class="dot" aria-hidden="true"></div><div class="nmeta"><time>${fmt(s.date)}</time></div><p class="ntext"><b>${esc(end.title)}</b></p></li>`;
     $("#pathCount").textContent = T.forks(s.path.length);
+    $("#pathLegend").textContent = T.pathLegend(s);
   }
 
   function shareText() {
