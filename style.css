@@ -57,6 +57,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .ka { font-family: "Noto Sans Georgian", serif; color: var(--wine); font-size: 22px; letter-spacing: .08em; }
 h1 { font-family: "Unbounded", sans-serif; font-weight: 700; font-size: clamp(34px, 8vw, 58px); line-height: 1.02; margin: 0; letter-spacing: -.02em; }
+.congrats { font: 600 18px/1.35 "Unbounded", sans-serif; color: var(--gold); margin: 0; }
+.subtitle { font: 500 clamp(16px, 3.6vw, 20px) "Unbounded", sans-serif; color: var(--wine); margin: -8px 0 0; }
+.langswitch {
+  position: fixed; top: 12px; right: 16px; z-index: 20;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: 13px; letter-spacing: .04em;
+}
+.langswitch:hover { border-color: var(--wine); color: var(--wine); }
+/* во время игры переключатель не нужен и мешает шапке */
+body:has(#game:not([hidden])) .langswitch { display: none; }
 .lead { font-size: 18px; margin: 0; text-wrap: pretty; }
 .charcard { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
 .charcard p { margin: 0; }
@@ -120,6 +130,16 @@ h1 { font-family: "Unbounded", sans-serif; font-weight: 700; font-size: clamp(34
 .timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--line); border-radius: 2px; }
 .timeline i { position: absolute; left: 0; top: 0; height: 3px; background: var(--gold); border-radius: 2px; transition: width .5s ease; }
 
+.news {
+  grid-column: 1 / -1; display: block; width: 100%; text-align: left; cursor: pointer;
+  background: var(--news-soft); color: var(--ink); border: 0; border-radius: 10px; padding: 7px 12px;
+  font-size: 13px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.news b { color: var(--news); font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: .04em; margin-right: 4px; }
+.news time { color: var(--muted); margin-right: 4px; font-variant-numeric: tabular-nums; }
+.news.open { white-space: normal; }
+.news.fresh { animation: newsflash 1.2s ease; }
+@keyframes newsflash { 0% { box-shadow: 0 0 0 2px var(--news); } 100% { box-shadow: 0 0 0 0 transparent; } }
 .tabs { display: none; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 28px; margin-top: 18px; }
 .feed { display: flex; flex-direction: column; gap: 10px; }
@@ -150,6 +170,9 @@ h1 { font-family: "Unbounded", sans-serif; font-weight: 700; font-size: clamp(34
 .tag-bar { border-left: 4px solid var(--gold); }
 .tag-drama .badge { background: var(--fight-soft); color: var(--fight); }
 .tag-drama { border-left: 4px dashed var(--fight); }
+.tag-binge .badge { background: var(--line); color: var(--muted); }
+.tag-binge { border-left: 4px solid var(--muted); }
+.node.tag-binge .dot { border-color: var(--muted); }
 
 .choices { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .choice {
@@ -165,7 +188,7 @@ body.awaiting .card:first-child { box-shadow: 0 0 0 3px var(--wine-soft); border
 .tlwrap { position: sticky; top: 210px; align-self: start; max-height: calc(100vh - 300px); display: flex; flex-direction: column; }
 .tlwrap h2 { font: 700 16px "Unbounded", sans-serif; margin: 0 0 10px; }
 .tl { overflow-y: auto; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
-.tl:empty::after { content: "Пока тихо. Твиттер просыпается."; padding: 16px; color: var(--muted); font-size: 14px; }
+.tl:empty::after { content: attr(data-empty); padding: 16px; color: var(--muted); font-size: 14px; }
 .tweet { display: grid; grid-template-columns: 36px 1fr; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); animation: in .35s ease both; }
 .tweet:last-child { border-bottom: 0; }
 .ava { width: 36px; height: 36px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px; }
@@ -193,7 +216,7 @@ body.awaiting .card:first-child { box-shadow: 0 0 0 3px var(--wine-soft); border
   .money #money { font-size: 18px; text-align: right; }
   .money { text-align: right; }
   .counters em { display: none; }
-  .tabs { display: flex; gap: 6px; margin-top: 12px; }
+  .tabs { grid-column: 1 / -1; display: flex; gap: 6px; }
   .tabs button { flex: 1; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px; font-weight: 600; }
   .tabs button.on { border-color: var(--wine); color: var(--wine); background: var(--wine-soft); }
   .count { background: var(--wine); color: #fff; border-radius: 999px; padding: 0 7px; font-size: 12px; margin-left: 4px; }
@@ -202,10 +225,61 @@ body.awaiting .card:first-child { box-shadow: 0 0 0 3px var(--wine-soft); border
   .tlwrap h2 { display: none; }
   body.mob-feed .tlwrap { display: none; }
   body.mob-tl .feed { display: none; }
-  .speeds button { padding: 8px 7px; }
-  .auto { padding-right: 4px; }
+}
+
+/* ——— телефон: компактная шапка, крупные кнопки, ничего не вылезает за экран ——— */
+@media (max-width: 600px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { -webkit-tap-highlight-color: transparent; }
+  button { touch-action: manipulation; }
+  .game { padding: 0 12px calc(88px + env(safe-area-inset-bottom)); }
+  .top { gap: 6px 12px; padding: calc(8px + env(safe-area-inset-top)) 0 8px; }
+  .date { font-size: 17px; }
+  .money #money { font-size: 16px; }
+  .small { font-size: 12px; }
+  /* шкалы в одну колонку: подпись · полоска · число */
+  .bars { grid-template-columns: 1fr; gap: 3px; }
+  .bar { display: grid; grid-template-columns: 12.5em 1fr; align-items: center; gap: 8px; }
+  .bar label { font-size: 12px; gap: 6px; white-space: nowrap; }
+  .track { margin-top: 0; height: 5px; }
+  /* счётчики в одну строку с прокруткой вбок */
+  .counters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 12px; font-size: 13px; margin: 0 -12px; padding: 0 12px; }
+  .counters::-webkit-scrollbar { display: none; }
+  .counters span { flex: none; }
+  .timeline { padding-top: 0; height: 3px; }
+  .timeline span { display: none; }
+  .tabs button { padding: 6px; font-size: 14px; }
+  .cols { margin-top: 10px; }
+  .card { padding: 12px 14px; border-radius: 12px; }
+  .card p { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+  .card.tag-filler { padding: 8px 14px; font-size: 14px; }
+  .choice { min-height: 44px; padding: 10px 12px; font-size: 15px; line-height: 1.35; }
+  .tweet { padding: 10px 12px; }
+  .ttext { overflow-wrap: anywhere; }
+  .controls {
+    left: 12px; right: 12px; transform: none; max-width: none; justify-content: space-between;
+    bottom: calc(10px + env(safe-area-inset-bottom)); gap: 4px; padding: 6px;
+  }
+  .pause { width: 44px; height: 44px; }
+  .speeds button { padding: 10px 6px; font-size: 13px; min-width: 34px; }
+  .auto { font-size: 12px; padding-right: 6px; gap: 4px; }
+  .auto input { width: 18px; height: 18px; }
+  /* вступление и финал */
+  .screen.intro, .screen.ending { padding: calc(56px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom)); gap: 14px; }
+  .lead { font-size: 16px; }
+  .row { flex-direction: column; }
+  .row button { width: 100%; padding: 14px 20px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .stats dd { font-size: 17px; }
+  .stats dt { font-size: 11px; }
+  .langswitch { top: calc(10px + env(safe-area-inset-top)); right: 12px; padding: 8px 14px; }
+}
+@media (max-width: 360px) {
+  .speeds button:nth-child(2), .speeds button:nth-child(4) { display: none; } /* оставляем 1×, 4×, 16× */
+  .bar { grid-template-columns: 11.5em 1fr; }
+  .bar label { font-size: 11px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .card, .tweet { animation: none; }
+  .card, .tweet, .news.fresh { animation: none; }
   .track i, .timeline i { transition: none; }
 }
