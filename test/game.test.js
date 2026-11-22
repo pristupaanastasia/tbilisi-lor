@@ -140,7 +140,8 @@ function liveWith(g, pickIdx, setup) {
 
 test("запой: три отказа — деньги кончаются, едешь к родителям", () => {
   const g = load({ lang: "ru" });
-  const s = liveWith(g, (card, st, n) => (st.binge ? 1 : n - 1), st => { st.mental = 0; });
+  // запас денег, чтобы до трёх отказов дошло раньше, чем кончатся деньги
+  const s = liveWith(g, (card, st, n) => (st.binge ? 1 : n - 1), st => { st.mental = 0; st.money = 20000; });
   assert.equal(s.ended, "home");
   assert.ok(s.has("binge_lost"), "не дошло до трёх отказов");
   assert.match(g.$("#endText").textContent, /Родители/);
