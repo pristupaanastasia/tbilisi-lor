@@ -7,6 +7,7 @@ REMOTE_DIR := /opt/tbilisi-lor
 DOMAIN ?= tbilisi-lor.com
 
 deploy:
+	@test -n "$(SERVER)" || { echo "создай deploy.local.mk с SERVER = root@<ip>"; exit 1; }
 	ssh $(SERVER) 'mkdir -p $(REMOTE_DIR)/site'
 	rsync -az --delete --exclude 'drafts-*' index.html style.css robots.txt sitemap.xml js $(SERVER):$(REMOTE_DIR)/site/
 	rsync -az deploy/Caddyfile deploy/docker-compose.yml $(SERVER):$(REMOTE_DIR)/
